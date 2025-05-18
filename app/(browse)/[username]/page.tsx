@@ -12,7 +12,11 @@ interface PageProps {
   };
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}) {
   return {
     title: params.username,
   };
