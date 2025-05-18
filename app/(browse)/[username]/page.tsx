@@ -6,23 +6,22 @@ import { isFollowingUser } from "@/lib/follow-service";
 import { isBlockedByUser } from "@/lib/block-service";
 import { StreamPlayer } from "@/components/stream-player";
 
-interface UserPageProps {
-  params: { username: string };
-}
-
-export async function generateMetadata({
-  params: { username },
-}: UserPageProps) {
-  return {
-    title: username,
+interface PageProps {
+  params: {
+    username: string;
   };
 }
 
-export default async function UserPage({
-  params: { username },
-}: UserPageProps) {
-  const user = await getUserByUsername(username);
+export async function generateMetadata({ params }: PageProps) {
+  return {
+    title: params.username,
+  };
+}
 
+export default async function UserPage({ params }: PageProps) {
+  const { username } = params;
+
+  const user = await getUserByUsername(username);
   if (!user || !user.stream) notFound();
 
   const isFollowing = await isFollowingUser(user.id);
@@ -31,6 +30,10 @@ export default async function UserPage({
   if (isBlocked) notFound();
 
   return (
-    <StreamPlayer user={user} isFollowing={isFollowing} stream={user.stream} />
+    <StreamPlayer
+      user={user}
+      isFollowing={isFollowing}
+      stream={user.stream}
+    />
   );
 }
